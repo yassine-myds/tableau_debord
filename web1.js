@@ -1,10 +1,11 @@
-// Sélection des éléments
 const ctxLine = document.getElementById('regionChart').getContext('2d');
 const ctxBar = document.getElementById('histogramChart').getContext('2d');
 const checkboxes = document.querySelectorAll('#checkboxContainer input[type="checkbox"]');
 const resetButton = document.getElementById('resetButton');
+const dateRange = document.getElementById('dateRange');
+const dateDisplay = document.getElementById('dateDisplay');
 
-// Données de base
+
 const labels = ['2010', '2015', '2020', '2025'];
 const datasets = [
     {
@@ -37,91 +38,75 @@ const datasets = [
     },
 ];
 
-// Graphique en ligne
+
 const lineChart = new Chart(ctxLine, {
     type: 'line',
-    data: {
-        labels: labels,
-        datasets: datasets,
-    },
+    data: { labels, datasets },
     options: {
         responsive: true,
-        scales: {
-            y: {
-                beginAtZero: true,
-            },
-        },
-        plugins: {
-            legend: {
-                position: 'top',
-                labels: {
-                    color: '#333',
-                    font: {
-                        size: 14,
-                    },
-                },
-            },
-        },
+        scales: { y: { beginAtZero: true } },
     },
 });
 
-// Histogramme
+
 const barChart = new Chart(ctxBar, {
     type: 'bar',
-    data: {
-        labels: labels,
-        datasets: datasets.map((dataset) => ({
-            ...dataset,
-            borderWidth: 1,
-        })),
-    },
+    data: { labels, datasets },
     options: {
         responsive: true,
-        scales: {
-            y: {
-                beginAtZero: true,
-            },
-        },
-        plugins: {
-            legend: {
-                position: 'top',
-                labels: {
-                    color: '#333',
-                    font: {
-                        size: 14,
-                    },
-                },
-            },
-        },
+        scales: { y: { beginAtZero: true } },
     },
 });
 
-// Mise à jour des graphiques selon les cases à cocher
-checkboxes.forEach((checkbox) => {
-    checkbox.addEventListener('change', (e) => {
-        const region = e.target.value;
-        const datasetLine = lineChart.data.datasets.find((d) => d.label === region);
-        const datasetBar = barChart.data.datasets.find((d) => d.label === region);
-        if (datasetLine && datasetBar) {
-            datasetLine.hidden = !e.target.checked;
-            datasetBar.hidden = !e.target.checked;
-            lineChart.update('active');
-            barChart.update('active');
-        }
-    });
-});
 
-// Bouton de réinitialisation des filtres
-resetButton.addEventListener('click', () => {
-    checkboxes.forEach((checkbox) => {
-        checkbox.checked = true;
+checkboxes.forEach((checkbox) => {
+    checkbox.addEventListener('change', () => {
         const datasetLine = lineChart.data.datasets.find((d) => d.label === checkbox.value);
         const datasetBar = barChart.data.datasets.find((d) => d.label === checkbox.value);
         if (datasetLine && datasetBar) {
-            datasetLine.hidden = false;
-            datasetBar.hidden = false;
+            datasetLine.hidden = !checkbox.checked;
+            datasetBar.hidden = !checkbox.checked;
+            lineChart.update();
+            barChart.update();
         }
     });
+});
+
+
+dateRange.addEventListener('input', () => {
+    const index = parseInt(dateRange.value, 10);
+    const filteredLabels = labels.slice(0, index + 1);
+    dateDisplay.textContent = `${filteredLabels[0]} - ${filteredLabels[filteredLabels.length - 1]}`;
+
+    lineChart.data.labels = filteredLabels;
+    barChart.data.labels = filteredLabels;
+    lineChart.data.datasets.forEach((dataset, i) => {
+        dataset.data = datasets[i].data.slice(0, index + 1);
+    });
+    barChart.data.datasets.forEach((dataset, i) => {
+        dataset.data = datasets[i].data.slice(0, index + 1);
+    });
+
+    lineChart.update();
+    barChart.update();
+});
+
+resetButton.addEventListener('click', () => {
+    checkboxes.forEach((checkbox) => (checkbox.checked = true));
+    dateRange.value = dateRange.max;
+    dateDisplay.textContent = '2010 - 2025';
+
+    lineChart.data.labels = labels;
+    barChart.data.labels = labels;
+    lineChart.data.datasets.forEach((dataset, i) => {
+        dataset.hidden = false;
+        dataset.data = datasets[i].data;
+    });
+    barChart.data.datasets.forEach((dataset, i) => {
+        dataset.hidden = false;
+        dataset.data = datasets[i].data;
+    });
+
     lineChart.update();
     barChart.update();
 });
