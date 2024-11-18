@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Graphique des Émissions de CO₂ par Région</title>
+    <title>Graphiques des Émissions de CO₂ par Région</title>
     <link rel="stylesheet" href="web1.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="web1.js" defer></script>
@@ -17,11 +17,14 @@
             <label><input type="checkbox" value="Africa" checked> Africa</label><br>
             <label><input type="checkbox" value="Americas" checked> Americas</label><br>
         </div>
+        <button id="resetButton">Réinitialiser les filtres</button>
     </div>
 
     <div id="content">
         <h1>Émissions de CO₂ par Région</h1>
         <canvas id="regionChart" width="800" height="400"></canvas>
+        <h1>Histogramme des Émissions de CO₂ par Région</h1>
+        <canvas id="histogramChart" width="800" height="400"></canvas>
     </div>
 </body>
 </html>

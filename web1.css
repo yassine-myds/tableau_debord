@@ -39,14 +39,42 @@ body {
     font-weight: bold;
 }
 
+#checkboxContainer label input[type="checkbox"] {
+    accent-color: #007BA1;
+}
+
+#resetButton {
+    width: 100%;
+    padding: 10px;
+    background-color: #005f7a;
+    color: #FFF;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+#resetButton:hover {
+    background-color: #007BA1;
+}
+
 /* Contenu principal */
 #content {
     margin-left: 220px;
     padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 20px;
 }
 
 /* Canvas */
 canvas {
     background-color: #fff;
     border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px;
 }
